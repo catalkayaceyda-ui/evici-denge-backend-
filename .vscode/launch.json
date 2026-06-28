@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Ev Ici Denge (Web Server)",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "-d",
+        "web-server",
+        "--web-renderer",
+        "html"
+      ]
+    }
+  ]
+}

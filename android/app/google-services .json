@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "687683938070",
+    "project_id": "ev-ici-denge",
+    "storage_bucket": "ev-ici-denge.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687683938070:android:4d800fa0fc470d9a46d237",
+        "android_client_info": {
+          "package_name": "com.example.ev_ici_denge"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZpNi3uzj5fYT4P9T3wMsKA_EmfEIxcdo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
