@@ -1,22 +1,15 @@
 {
-  "name": "ev_ici_denge",
+  "name": "evici-denge-backend",
   "version": "1.0.0",
-  "description": "A new Flutter project.",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib",
-    "test": "test"
-  },
+  "description": "Ev Ici Denge AI backend",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs",
   "dependencies": {
     "@google/genai": "^2.8.0",
-    "cors": "^2.8.6",
+    "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^5.2.1"
   }
