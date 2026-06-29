@@ -10,8 +10,72 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "20mb" }));
 
+if (!process.env.GEMINI_API_KEY) {
+  console.error("HATA: GEMINI_API_KEY bulunamadı. Render Environment Variables kontrol et.");
+}
+
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
+});
+
+app.get("/", (req, res) => {
+  res.send("Ev Ici Denge backend calisiyor.");
+});
+
+app.get("/health", (req, res) => {
+  res.json({
+    ok: true,
+    message: "Backend aktif",
+  });
+});
+
+app.post("/ai-support", async (req, res) => {
+  try {
+    const { title, message, languageCode } = req.body;
+
+    if (!message) {
+      return res.status(400).json({
+        error: "Mesaj boş gönderildi.",
+      });
+    }
+
+    const isEnglish =
+      languageCode === "en" ||
+      message.toLowerCase().includes("please answer in english");
+
+    const prompt = `
+Sen profesyonel bir aile ilişkileri ve duygu destek danışmanısın.
+
+Kategori:
+${title || "Genel Destek"}
+
+Kullanıcının mesajı:
+${message}
+
+Cevap kuralları:
+- ${isEnglish ? "Answer in English." : "Türkçe cevap ver."}
+- Empati kur.
+- Suçlayıcı konuşma.
+- Kısa, net ve uygulanabilir öneriler ver.
+- Kaynana, elti, görümce, eş, çocuk ve aile ilişkilerinde sınır koymayı nazik anlat.
+- Tehlike, şiddet veya ağır psikolojik durum varsa profesyonel destek önermeyi unutma.
+`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+
+    res.json({
+      answer: response.text || "Şu anda cevap oluşturulamadı.",
+    });
+  } catch (e) {
+    console.error("AI SUPPORT ERROR:", e);
+
+    res.status(500).json({
+      error: e.toString(),
+    });
+  }
 });
 
 app.post("/generate-image", async (req, res) => {
@@ -76,7 +140,7 @@ Stil:
       text: textResult,
     });
   } catch (e) {
-    console.error(e);
+    console.error("IMAGE ERROR:", e);
 
     res.status(500).json({
       error: e.toString(),
@@ -84,51 +148,8 @@ Stil:
   }
 });
 
-app.post("/ai-support", async (req, res) => {
-  try {
-    const { title, message } = req.body;
+const port = process.env.PORT || 3000;
 
-    if (!message) {
-      return res.status(400).json({
-        error: "Mesaj boş gönderildi.",
-      });
-    }
-
-    const prompt = `
-Sen profesyonel bir aile ilişkileri ve duygu destek danışmanısın.
-
-Kategori:
-${title || "Genel Destek"}
-
-Kullanıcının mesajı:
-${message}
-
-Cevap kuralları:
-- Türkçe cevap ver.
-- Empati kur.
-- Suçlayıcı konuşma.
-- Kısa, net ve uygulanabilir öneriler ver.
-- Kaynana, elti, görümce, eş, çocuk ve aile ilişkilerinde sınır koymayı nazik anlat.
-- Tehlike, şiddet veya ağır psikolojik durum varsa profesyonel destek önermeyi unutma.
-`;
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-    });
-
-    res.json({
-      answer: response.text || "Şu anda cevap oluşturulamadı.",
-    });
-  } catch (e) {
-    console.error(e);
-
-    res.status(500).json({
-      error: e.toString(),
-    });
-  }
-});
-
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server çalışıyor: http://localhost:3000");
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server çalışıyor: http://0.0.0.0:${port}`);
 });
